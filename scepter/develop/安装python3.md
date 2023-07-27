@@ -116,6 +116,48 @@ $sudo apt-get update
 $sudo apt-get install -y python3-pip
 ```
 
+alpine有时候找不到源, 多切几个试下
+
+```shell
+echo http://mirrors.aliyun.com/alpine/v3.16/main/ > /etc/apk/repositories
+echo http://mirrors.aliyun.com/alpine/v3.16/community/ >> /etc/apt/sources.list
+
+apk update
+apk search py3-pip
+apk add py3-pip
+```
+
+### alpine安装错误
+
+单独安装pip有时候会报错 
+
+```shell
+# 更换源
+sed -i s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g /etc/apk/repositories
+
+# 安装python3 
+apk add --update --no-cache curl jq py3-configobj py3-setuptools python3 python3-dev
+
+# pip即时编译依赖
+apk add --no-cache gcc g++ libffi-dev make zlib-dev libcec-dev libtool 
+
+# pip3 安装
+apk add wget
+wget https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py
+
+# 设置国内pip源
+vim  ~/.pip/pip.conf
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple
+[install]
+trusted-host=mirrors.aliyun.com
+
+# 使用pip/pip3下载依赖包
+pip3 freeze > requirements.txt
+pip3 install -r requirements.txt
+```
+
 ### tensorflow配置
 
 ```shell
