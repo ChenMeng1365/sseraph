@@ -1,0 +1,22 @@
+[
+  {
+    "id": "s1",
+    "usertype": "sender",
+    "server": "",
+    "port": 25,
+    "username": "",
+    "domain": "",
+    "password": "",
+    "authtype": "plain"
+  },
+  {
+    "id": "r1",
+    "usertype": "receiver",
+    "server": "",
+    "port": "",
+    "username": "",
+    "domain": "",
+    "password": "",
+    "authtype": ""
+  }
+]

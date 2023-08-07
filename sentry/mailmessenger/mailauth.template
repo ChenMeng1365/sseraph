@@ -1,0 +1,8 @@
+临时接入代码
+
+您的临时接入代码((code))，请登陆((request-url))输入授权码。
+
+--- r
+
+code = 
+request-url = 
