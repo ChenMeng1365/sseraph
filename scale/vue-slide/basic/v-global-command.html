@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VueShop</title>
+    <script type="text/javascript" src="../assets/js/vue-2.6.11.min.js"></script>
+</html>
+<body>
+    <h1>vue.global.command</h1>
+    <hr>
+    <div id="app-on">
+        <div v-setcolor="color">计数器：{{scores}}</div>
+        <button v-on:click="plus">加分</button>
+        <button onclick="unbind()">解绑</button>
+    </div>
+
+    <hr>
+    <div id="explorer"></div>
+
+    <hr>
+    <div id="setter">
+        {{this.title}} is {{this.counter}}<br>
+        <ul>
+            <li v-for="item in this.items">{{item}}</li>
+        </ul>
+    </div>
+    <p><button onclick="add()">add</button></p>
+    <p><button onclick="chg()">chg</button></p>
+
+    <hr>
+    <div id="app-cycle">
+      <div>计数器：{{number}}</div>
+      <button @click="accumulate">＋</button>
+      <button onclick="destroy()">销毁</button>
+    </div>
+
+    <hr>
+    <div id="app-templ-option">  </div>
+    <div id="app-templ-tag">  </div>
+    <div id="app-templ-script">  </div>
+    <template id='templ'>
+        <h2 style="color:green">标签模板{{message}}</h2>
+    </template>
+    <script id="script" type="x-template" src="可以外部引入">
+      <h2 style="color:blue">脚本模板{{message}}</h2>
+    </script>
+
+
+    <script type="text/javascript">
+        // 自定义指令
+        // Vue.directive("setcolor",function(el,binding){
+        //     console.log(el);
+        //     console.log(binding);
+        //     el.style="color:"+binding.value;
+        // });
+        // 自定义指令的生命周期
+        Vue.directive("setcolor",{
+            bind: function(el,binding){//被绑定
+                console.log('1 - bind');
+                el.style="color:"+binding.value;
+            },
+            inserted: function(){//绑定到节点
+                console.log('2 - inserted');
+            },
+            update: function(){//组件更新
+                console.log('3 - update');
+            },
+            componentUpdated: function(){//组件更新完成
+                console.log('4 - componentUpdated');
+            },
+            unbind: function(){//解绑
+                console.log('5 - unbind');
+            }
+        });
+        function unbind(){
+            app_on.$destroy();
+        };
+        var app_on = new Vue({
+            el: '#app-on',
+            data: {
+                scores: 0,
+                color: 'green'
+            },
+            methods: {
+                plus: function(){
+                    this.scores++;
+                }
+            }
+        });
+
+        // 扩展实例
+        var explorerURL = Vue.extend({
+            template: '<p><a :href="explorerURL">{{explorerName}}</a></p>',
+            data: function(){
+                return {
+                    explorerName: 'Explorer',
+                    explorerURL: 'https://www.baidu.com'
+                };
+            }
+        });
+        new explorerURL().$mount('#explorer');
+
+        // 设置属性值方法
+        var outer_var = {
+            counter: 3,
+            items: ['a','b','c'],
+            title: "outer_counter"
+        };
+        var app_setter = new Vue({
+            el: '#setter',
+            data: outer_var
+        });
+        function add(){
+            Vue.set(outer_var, 'counter', outer_var.counter+1);
+            // app_setter.counter++; // 等效写法
+            // outer_var.counter++; // 等效写法
+        };
+        function chg(){
+            Vue.set(outer_var.items, 3, 'd'); // 设置属性值的真实用途
+            // app_setter.items[3]= 'd'; // js机制问题：更新子元素不会导致父元素被监听到
+            // outer_var.items[3] = 'd'; // js机制问题：更新子元素不会导致父元素被监听到
+        };
+
+        var app_cycle = new Vue({
+            el: '#app-cycle',
+            data: {
+                number: 1
+            },
+            methods: {
+                // 常规方法
+                accumulate: function(){
+                    this.number++;
+                }
+            },
+            // 全生命周期方法
+            beforeCreate: function(){
+                console.log('1-beforeCreate 初始化之前');
+            },
+            created: function(){
+                console.log('2-created 创建完成');
+            },
+            beforeMount: function(){
+                console.log('3-beforeMount 挂载之前');
+            },
+            mounted: function(){
+                console.log('4-mounted 挂载完成');
+            },
+            beforeUpdate: function(){
+                console.log('5-beforeUpdate 数据更新之前');
+            },
+            updated: function(){
+                console.log('6-updated 更新完成');
+            },
+            activated: function(){
+                console.log('7-activated'); // 此处略过
+            },
+            deactivated: function(){
+                console.log('8-deactivated'); // 此处略过
+            },
+            beforeDestroy: function(){
+                console.log('9-beforeDestroy 销毁之前');
+            },
+            destroyed: function(){
+                console.log('10-destroyed 销毁完成');
+            }
+        });
+        function destroy(){
+            app_cycle.$destroy();
+        };
+
+        var data = {message: '？？？'};
+        var app_templ_option = new Vue({
+            el: '#app-templ-option',
+            data: data,
+            template: `
+                <h2 style="color:red">选项模板{{message}}</h2>
+            `
+        });
+        var app_templ_tag = new Vue({
+            el: '#app-templ-tag',
+            data: data,
+            template: '#templ'
+        });
+        var app_templ_script = new Vue({
+            el: '#app-templ-script',
+            data: data,
+            template: '#script'
+        });
+
+    </script>
+</body>

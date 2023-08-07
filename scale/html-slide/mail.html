@@ -1,0 +1,16 @@
+<script>
+  function isEmail(str) {
+    if (str == null) return;
+    var reg = new RegExp(/^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/);
+    return reg.test(str); //检测字符串是否符合正则表达式
+  }
+
+  (function () {
+    var str = "123abc@qq.com";
+    document.write(str + "验证结果：" + isEmail(str) + "<br />");
+    var str = "123_test.com";
+    document.write(str + "验证结果：" + isEmail(str) + "<br />");
+    var str = "haha@163.com";
+    document.write(str + "验证结果：" + isEmail(str) + "<br />");
+  })();
+</script>

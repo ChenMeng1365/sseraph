@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VueShop</title>
+    <script type="text/javascript" src="../assets/js/vue-2.6.11.min.js"></script>
+</html>
+<body>
+    <h1>Hello~</h1>
+    <hr>
+    <div id="app">
+        {{message}}
+    </div>
+
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello~'
+            }
+        })
+    </script>
+</body>

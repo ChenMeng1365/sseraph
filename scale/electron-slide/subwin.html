@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron Subwindow</title>
+</head>
+<body>
+    <div></div>
+    <button id='sub_btn'>向父窗口发送消息</button>
+</body>
+<script>
+    var sub_btn = this.document.querySelector('#sub_btn');
+    sub_btn.onclick = function(e){
+        window.opener.postMessage('message from sub window');
+    };
+</script>
+</html>

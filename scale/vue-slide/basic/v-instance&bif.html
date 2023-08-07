@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VueShop</title>
+    <script type="text/javascript" src="../assets/js/vue-2.6.11.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery-3.4.1.min.js"></script>
+</html>
+<body>
+    <h1>v-instance & bif</h1>
+    <hr>
+    <div id="app_1">
+        {{message}}
+    </div>
+
+    <hr>
+    <div id="app_2">
+    </div>
+    <button onclick="destroy()">destroy</button>
+    <button onclick="reload()">reload</button>
+    <button onclick="next()">tick</button>
+
+    <hr>
+    <div id="app_3">
+        {{counter}}<br>
+        <button @click="add">add</button>
+    </div>
+    <p><button onclick="sub()">sub</button></p>
+    <p><button onclick="sub_once()">sub 1 time</button></p>
+    <p><button onclick="off()">off sub</button></p>
+
+    <hr>
+    <div id="app_4">
+        <tmpl><!-- 在模板的引用处设置slot名称和绑定数据关系 -->
+            <span slot="name/url">{{t.url}}</span>
+            <span slot="name/name">{{t.name}}</span>
+            <span slot="name/date">{{t.date}}</span>
+        </tmpl>
+    </div>
+    <template id="templ_id">
+        <div><!-- 在模板的定义处定义slot名称 -->
+            <p>URL:<slot name="name/url"></slot></p>
+            <p>NAME:<slot name="name/name"></slot></p>
+            <p>DATE:<slot name="name/date"></slot></p>
+        </div>
+    </template>
+
+    <script type="text/javascript">
+        // 感觉都是废话
+        var app_1 = new Vue({
+            el: '#app_1',
+            data: {
+                message: 'Hello~'
+            },
+            mounted: function(){
+                $('#app_1').html("Hi~");  // 可以混用其他外部库方法
+            },
+            methods: {
+                talk: function(){
+                    console.log("talk like classical programming.")
+                }
+            }
+        });
+        app_1.talk(); // 经典的编程方式调用
+
+        // 挂载方式及生命周期钩子函数
+        var extension = Vue.extend({
+            template: `<p>{{message}}</p>`,
+            data: function(){
+                return {
+                    message: 'bullshit!',
+                }
+            },
+            mounted: function(){
+                console.log("extension mounted.");
+            },
+            destroyed: function(){
+                console.log("extension destroyed.")
+            },
+            updated: function(){
+                console.log("extension updated.")
+            }
+        });
+        var app_2 = new extension().$mount('#app_2');
+        function destroy(){
+            app_2.$destroy();
+        };
+        function reload(){
+            app_2.$forceUpdate();
+        };
+        function next(){
+            app_2.message = 'anywhere~';
+            app_2.$nextTick( function(){
+                console.log("after updated,anywhere~");
+            })
+        };
+
+        // 实例生成后外部加载
+        var app_3 = new Vue({
+            el: '#app_3',
+            data: {
+                counter: 1
+            },
+            methods: {
+                add: function(){
+                   this.counter+=1;
+                }
+            }
+        });
+        app_3.$on('sub',function(){ // 加载后监听事件
+            this.counter--;
+        });
+        app_3.$once('sub_once',function(){  // 加载后监听事件，但只执行一次后不再监听
+            this.counter -= 10;
+        })
+        function sub(){
+            app_3.$emit('sub');
+        };
+        function sub_once(){
+            app_3.$emit('sub_once');
+        };
+        function off(){
+            app_3.$off('sub');  // 关闭监听事件
+        };
+
+        // 模板和引用中属性的关系（使用slot）
+        var templ = { // templ是模板变量的名称，对应一个模板的实现
+            template: '#templ_id' // templ_id是<template>标签的id
+        };
+        var app_4 = new Vue({
+            el: '#app_4',
+            data: {
+                t: {
+                    url: 'www.baidu.com',
+                    name: 'baidu',
+                    date: '2019/1/17'
+                }
+            },
+            components: {
+                'tmpl': templ // tmpl是vue实例中组件列表的键，在引用时也是用这个键名做标签<tmpl/>
+            }
+        });
+
+    </script>
+</body>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VueShop</title>
+    <script type="text/javascript" src="../assets/js/vue-2.6.11.min.js"></script>
+</html>
+<body>
+    <h1>v-inner-command</h1>
+    <hr>
+    <div id="app-cond">
+        <!-- 使用v-if减轻服务端压力 -->
+        <div v-if="isLogin">Welcome~</div>
+        <!-- 使用v-show减轻客户端压力 -->
+        <div v-show="isLogin">Welcome≈</div>
+
+        <div v-else>Please login</div>
+    </div>
+
+    <hr>
+
+    <div id="app-rept">
+        <li v-for="fruit in sorted_fruits">
+            {{fruit}}
+        </li>
+        <br>
+
+        <li v-for="number in sorted_numbers">
+            {{number}}
+        </li>
+        <br>
+
+        <li v-for="(member,index) in sorted_members">
+            {{index}}: {{member.name}}({{member.age}})
+        </li>
+    </div>
+
+    <hr>
+
+    <div id="app-text">
+        <!-- v-text优于{{}}的地方在于加载未完成前不会显示{{message}}为文本 -->
+        <span v-text="message"></span>
+        <br>
+
+        <!-- 尽量少用v-html，因为可能会有xss安全风险 -->
+        <span v-html="message"></span>
+    </div>
+
+    <hr>
+
+    <div id="app-on">
+        计数器：{{scores}}<br>
+        <button v-on:click="plus">加分</button>
+        <button @click="minus">减分</button>
+        <input v-on:keyup.enter="multiplus" v-model="points"></input>
+        <input v-on:keyup.13="multiminus" v-model="points"></input>
+    </div>
+
+    <hr>
+
+    <div id="app-model">
+        <p>原文本：{{message}}</p>
+        
+        <p>直接绑定：<input v-model="message"></input></p>
+        <!-- 焦点远离控件时刷新 -->
+        <p>延迟绑定：<input v-model.lazy="message"></input></p>
+        <!-- 先输入数字时，以后只有输入数字才会刷新 -->
+        <p>数字绑定：<input v-model.number="message"></input></p>
+        <!-- 不加trim，前后空格压缩成一个，加了trim前后空格删除 -->
+        <p>紧凑绑定：<input v-model.trim="message"></input></p>
+      
+        <p>
+            文本框：<br><textarea cols="30"  rows="10" v-model="message"></textarea>
+        </p>
+
+        <p>
+            <input type="checkbox" id="bool" v-model="isTrue"></input>
+            <label for="bool">{{isTrue}}</label>
+        </p>
+
+        <p>
+            <input type="checkbox" id="apple" value="apple" v-model="choices"></input>
+            <label for="apple">apple</label>
+            <input type="checkbox" id="banana" value="banana" v-model="choices"></input>
+            <label for="banana">banana</label>
+            <input type="checkbox" id="orange" value="orange" v-model="choices"></input>
+            <label for="orange">orange</label>
+            <br>你的选择：{{choices}}
+        </p>
+
+        <p>
+            <input type="radio" id="男" value="♂ " v-model="gender"></input>
+            <label for="男">♂</label>
+            <input type="radio" id="女" value="♀" v-model="gender"></input>
+            <label for="女">♀</label>
+            <br>你的选择：{{gender}}
+        </p>
+    </div>
+
+   <hr>
+
+    <div id="app-bind">
+        <p><img v-bind:src="imgsrc" width="180px"></img></p>
+
+        <p><a :href="weburl" target="_blank">New Tab</a></p>
+
+        <div :class="[using,noUsing]">组合式样</div>
+
+        <div :class="ustate?using:noUsing">条件式样</div>
+            
+        <div :style="{color: anotherColor, fontSize: anotherFont}">内置样式属性</div>
+        <div :style="sytleObj">内置样式对象</div>
+
+        <div :class="{font:ustate}"><!-- 注意： {样式:属性取值} -->
+            <input type="checkbox" id="ustate" v-model="ustate"></input>
+            <label for="ustate">using state is {{ustate}}</label>
+        </div>
+    </div>
+    <style>
+        .color {
+            color : red
+        }
+        .font {
+            font-size : 150%
+        }
+    </style>
+
+    <hr>
+
+    <div id="app-pre" v-pre>
+        {{message}}
+    </div>
+
+    <hr>
+
+    <div id="app-cloak" v-cloak>
+      {{message}}
+    </div>
+
+    <hr>
+
+    <div id="app-once" v-cloak>
+      <p>一直绑定：{{message}}</p>
+      <p v-once>一次绑定：{{message}}</p>
+      <input type="text" v-model="message"></input>
+    </div>
+
+    <script type="text/javascript">
+        var app_cond = new Vue({
+            el: '#app-cond',
+            data: {
+                isLogin: true
+                // isLogin: false
+            }
+        });
+        var app_rept = new Vue({
+            el: '#app-rept',
+            data: {
+                fruits: ['tomato', 'cabbage', 'banana', 'eggplant'],
+                numbers: [7,11,4],
+                members: [
+                    {name: 'kyle', age:30,},
+                    {name: 'gale', age:61,},
+                    {name: 'reya', age:14,}
+                ]
+            },
+            computed: {
+                sorted_fruits: function(){
+                    return this.fruits.sort();
+                },
+                sorted_numbers: function(){
+                    return this.numbers.sort(sortNumber);
+                },
+                sorted_members: function(){
+                    return sortByKey(this.members, 'age');
+                }
+            }
+        });
+        var app_text = new Vue({
+            el: '#app-text',
+            data: {
+                message: "<h1>show me the text</h1>"
+            }
+        });
+        var app_on = new Vue({
+            el: '#app-on',
+            data: {
+                scores: 0,
+                points: 15
+            },
+            methods: {
+                plus: function(){
+                    this.scores++;
+                },
+                minus: function(){
+                    this.scores--;
+                },
+                multiplus: function(){
+                   this.scores = this.scores + parseInt(this.points);
+                },
+                multiminus: function(){
+                    this.scores = this.scores - parseInt(this.points);
+                }
+            }
+        });
+        var app_model = new Vue({
+            el: '#app-model',
+            data: {
+                message: "双向数据绑定",
+                isTrue: true,
+                choices: [],
+                gender: '♂ '
+            }
+        });
+        var app_bind = new Vue({
+            el: '#app-bind',
+            data: {
+                imgsrc: 'http://code.numeron.net:3000/avatars/418cce54c6fffcdb368b81db26adf657',
+                weburl: 'http://www.baidu.com',
+                using: 'color',
+                noUsing: 'font',
+                ustate: true,
+                anotherColor: 'blue',
+                anotherFont: "33px",
+                sytleObj: {
+                    color: 'green',
+                    fontSize: '20px'
+                }
+            }
+        });
+        var app_pre = new Vue({
+            el: '#app-pre',
+            data: {
+                message: 'never be shown'
+            }
+        });
+        var app_cloack = new Vue({
+            el: '#app-cloak',
+            data: {
+                message: '渲染完成时才显示'
+            }
+        });
+        var app_once = new Vue({
+            el: '#app-once',
+            data: {
+                message: '？？？'
+            }
+        });
+
+        function sortNumber(a,b){
+            return a-b;
+        };
+        function sortByKey(array,key){
+            return array.sort(function(a,b){
+                var x=a[key];
+                var y=b[key];
+                return ((x<y)?-1:((x>y)?1:0));
+            });
+        };
+
+    </script>
+</body>

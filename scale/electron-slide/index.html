@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron Train</title>
+</head>
+<body>
+    <div>
+        <a href="https://www.electronjs.org/docs">Electron 文档</a>
+    </div>
+
+    <div>
+        <button id='load_btn'>加载文件</button>
+        <button id='remote_btn'>新开窗口</button>
+        <button id='exlink_btn'>外部链接</button>
+        <button id='subwin_btn'>子窗口消息</button>
+        <button id='sfile_btn'>选择文件</button>
+        <button id='wfile_btn'>保存文件</button>
+        <button id='msgbox_btn'>消息框</button>
+    </div>
+        
+    <div>
+      <button id='notify_btn'>消息通知</button>
+      <span id="context">BV177411s7LtBV1yA411b7EV</span>
+      <button id="copy_btn">复制文本</button>
+    </div>
+
+    <div id='file'></div>
+    <div id='sub_channel'></div>
+    <img id='image' style="width: 100"></img>
+
+    <script src="render/index.js"></script>
+    <script src="render/notify.js"></script>
+    <script src="render/action.js"></script>
+</body>
+</html>
