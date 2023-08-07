@@ -10,3 +10,5 @@ Just A Note
 * sovereignty: 垃圾堆
 * sentry: 工具集
 * noble: 链接整理
+
+Yes, indeed. SSeraph is not only on public net.
